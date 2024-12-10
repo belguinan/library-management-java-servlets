@@ -42,11 +42,9 @@ public class LoginServlet extends HttpBaseController {
     ) throws ServletException, IOException {
 
         try (UserRepository repository = new UserRepository(entityManagerFactory)) {
-
             User user = UserFactory.fromLoginRequest(request, repository);
             request.getSession().setAttribute("user", user);
             response.sendRedirect(request.getContextPath() + "/");
-            
         } catch (InvalidArgumentException e) {
             request.setAttribute("error", e.getMessage());
         } catch (Exception e) {
@@ -56,6 +54,13 @@ public class LoginServlet extends HttpBaseController {
         this.index(request, response);
     }
 
+    /**
+     * @param request
+     * @param response
+     * @param id
+     * @throws ServletException
+     * @throws IOException
+     */
     protected void delete(
         HttpServletRequest request, 
         HttpServletResponse response,

@@ -74,7 +74,11 @@ public class DatabaseRepository<T> implements AutoCloseable {
     public void delete(T model)
     {
         this.inTransaction(() -> {
-            this.entityManager.remove(this.entityManager.merge(model));
+            this.entityManager.remove(
+                this.entityManager.contains(model) 
+                    ? model 
+                    : this.entityManager.merge(model)
+            );
         });
     }
     

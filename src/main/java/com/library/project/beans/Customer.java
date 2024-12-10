@@ -1,7 +1,5 @@
 package com.library.project.beans;
 
-import java.sql.Date;
-
 import com.library.project.contracts.JpaTimestamp;
 
 import jakarta.persistence.Column;

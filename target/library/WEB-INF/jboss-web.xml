@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jboss-web xmlns="http://www.jboss.org/schema/jbossas/4.0">
+    <context-root>/library</context-root>
+</jboss-web>

@@ -43,33 +43,20 @@ public class BorrowServlet extends HttpBaseController {
         HttpServletResponse response
     ) throws ServletException, IOException {
 
-        JsonResponse jsonResponse;
-        
         try (BorrowRepository borrowRepository = new BorrowRepository(entityManagerFactory)) {
+            
             Borrow borrow = BorrowFactory.fromRequest(request, entityManagerFactory);
-
+            
             if (! borrowRepository.isBorrowable(borrow)) {
                 throw new Exception("Item already borrowed and not returned yet!");
             }
             
             borrowRepository.create(borrow);
             
-            jsonResponse = new JsonResponse(201, borrow);
+            this.json(new JsonResponse(201, borrow), response);
         } catch (Exception e) {
-            jsonResponse = new JsonResponse(419, e.getMessage());
+            this.json(new JsonResponse(419, e.getMessage()), response);
         }
-
-        this.json(jsonResponse, response);
-    }
-    
-    @Override
-    protected void show(
-        HttpServletRequest request, 
-        HttpServletResponse response, 
-        String id
-    ) throws ServletException, IOException {
-        
-        this.view("borrow/show", request, response);
     }
     
     @Override
@@ -78,23 +65,24 @@ public class BorrowServlet extends HttpBaseController {
         HttpServletResponse response, 
         String id
     ) throws ServletException, IOException {
-        JsonResponse jsonResponse;
         
         try (BorrowRepository borrowRepository = new BorrowRepository(entityManagerFactory)) {
+            
             Customer customer = CustomerFactory.fromDatabase(request, entityManagerFactory);
             Book book = BookFactory.fromDatabase(request, entityManagerFactory);
             Borrow borrow = borrowRepository.findPendingByBookAndCustomer(customer, book);
+
             borrowRepository.markAsReturned(borrow);
-            jsonResponse = new JsonResponse(201, borrow);
+
+            this.json(new JsonResponse(201, borrow), response);
+            
         } catch (Exception e) {
-            jsonResponse = new JsonResponse(
+            this.json(new JsonResponse(
                 419, 
                 e.getMessage().startsWith("No result found for query") 
                     ? "This customer didn't borrow this book!"
                     : e.getMessage()
-            );
+            ), response);
         }
-
-        this.json(jsonResponse, response);
     }
 }

@@ -5,7 +5,6 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Optional;
 
 import com.library.project.beans.Book;
 import com.library.project.beans.Borrow;
@@ -184,9 +183,10 @@ public class BorrowRepository extends DatabaseRepository<Borrow> {
 
         int perPage = this.getIntRequestParam(request, "perPage", 25);
 
-        long totalItems = (long) this.getBorrowingHistoryQuery("SELECT COUNT(b) FROM Borrow b", Long.class, request).getSingleResult();
+        long totalItems = (long) this.getBorrowingHistoryQuery("SELECT COUNT(b) FROM Borrow b", Long.class, request)
+            .getSingleResult();
 
-        List<Borrow> items = this.getBorrowingHistoryQuery("SELECT DISTINCT b FROM Borrow b JOIN FETCH b.book JOIN FETCH b.customer", Borrow.class, request)
+        List<Borrow> items = this.getBorrowingHistoryQuery("SELECT DISTINCT b FROM Borrow b", Borrow.class, request)
             .setFirstResult((page - 1) * perPage)
             .setMaxResults(perPage)
             .getResultList();

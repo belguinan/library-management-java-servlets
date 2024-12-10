@@ -26,15 +26,11 @@ public class CustomerServlet extends HttpBaseController {
             this.view("views/customer.jsp", request, response);
         }
         
-        JsonResponse jsonResponse;
-        
         try (CustomerRepository repository = new CustomerRepository(entityManagerFactory)) {
-            jsonResponse = new JsonResponse(201, repository.paginate(request, Customer.class));
+            this.json(new JsonResponse(201, repository.paginate(request, Customer.class)), response);
         } catch (Exception e) {
-            jsonResponse = new JsonResponse(419, e.getMessage());
+            this.json(new JsonResponse(419, e.getMessage()), response);
         }
-
-        this.json(jsonResponse, response);
     }
     
     @Override
@@ -43,54 +39,14 @@ public class CustomerServlet extends HttpBaseController {
         HttpServletResponse response
     ) throws ServletException, IOException {
 
-        JsonResponse jsonResponse;
-
         try (CustomerRepository repository = new CustomerRepository(entityManagerFactory)) {
             Customer customer = repository.findOrCreate(
                 CustomerFactory.fromRequest(request)
             );
             
-            jsonResponse = new JsonResponse(201, customer);
+            this.json(new JsonResponse(201, customer), response);
         } catch (Exception e) {
-            jsonResponse = new JsonResponse(419, e.getMessage());
+            this.json(new JsonResponse(419, e.getMessage()), response);
         }
-        
-        this.json(jsonResponse, response);
-    }
-    
-    @Override
-    protected void show(
-        HttpServletRequest request, 
-        HttpServletResponse response, 
-        String id
-    ) throws ServletException, IOException {
-        
-    }
-    
-    @Override
-    protected void edit(
-        HttpServletRequest request, 
-        HttpServletResponse response, 
-        String id
-    ) throws ServletException, IOException {
-        
-    }
-    
-    @Override
-    protected void update(
-        HttpServletRequest request, 
-        HttpServletResponse response, 
-        String id
-    ) throws ServletException, IOException {
-        this.redirect(request.getContextPath() + "/customer", response);
-    }
-    
-    @Override
-    protected void delete(
-        HttpServletRequest request, 
-        HttpServletResponse response, 
-        String id
-    ) throws ServletException, IOException {
-        this.redirect(request.getContextPath() + "/customer", response);
     }
 }

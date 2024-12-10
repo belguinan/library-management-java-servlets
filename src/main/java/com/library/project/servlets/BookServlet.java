@@ -29,16 +29,17 @@ public class BookServlet extends HttpBaseController {
         HttpServletRequest request, 
         HttpServletResponse response
     ) throws ServletException, IOException {
-        
-        JsonResponse jsonResponse;
-        
         try (BookRepository repository = new BookRepository(entityManagerFactory)) {
-            jsonResponse = new JsonResponse(201, repository.paginate(request));
+            this.json(
+                new JsonResponse(201, repository.paginate(request)), 
+                response
+            );
         } catch (Exception e) {
-            jsonResponse = new JsonResponse(419, e.getMessage());
+            this.json(
+                new JsonResponse(419, e.getMessage()), 
+                response
+            );
         }
-
-        this.json(jsonResponse, response);
     }
 
     @Override
